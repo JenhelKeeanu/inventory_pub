@@ -1,0 +1,62 @@
+extends ../../../templates/landingbase.pug
+
+block body
+    <body class="bckgrndbase ">
+        <div class="row h-100">
+            <div class="login-form w-25 my-auto mr-auto ml-auto">
+
+                <form action="/home" method="POST">
+                    <h2 class="text-center">ZAGANA</h2>       
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Username" required="required" name="user_email">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password" required="required" name="user_password">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block" name="signin">Log in</button>
+                    </div>
+                    
+                </form>
+            </div>
+
+        </div>
+            //- <!-- Modal -->
+            //- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            //-     <div class="modal-dialog" role="document">
+            //-         <div class="modal-content">
+            //-             <div class="modal-body">
+            //-                 <h3 style="display:inline;">Sign in to your Account</h3><a data-dismiss="modal" style="display:inline;" class="float-right">X</a>
+            //-                 <hr class="style9" style="margin-bottom:5%;margin-top:3%;">
+            //-                 <form action="/home" method="POST">
+            //-                     <div class="card">
+            //-                         <div class="card-body" >
+            //-                             <i class="fa fa-address-card-o" style="font-size:30px;margin-right:2%;"></i> Email Address: <input style="width:65%;margin-bottom:3%;" type="email" name="user_email" value="" required/>
+            //-                             <br>
+            //-                             <i class="fa fa-lock" style="font-size:30px;margin-left:2%;margin-right:4%;"></i> Password: <input style="width:70%;margin-left:1%;" type="password" name="user_password" value="" required/>
+            //-                         </div>
+            //-                     </div>
+            //-                     <button name="submit" class="btn btn-primary float-right" style="margin-top:3%;" value="submit">Login
+            //-                 </form>
+            //-             </div>
+            //-         </div>
+            //-     </div>
+            //- </div>
+            
+
+            
+            <!-- /.Modal -->
+            <a href="javascript:" id="return-to-top"><i class="fa fa-angle-up"></i></a>
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+            <script src="landing/js/jquery.min.js"></script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+            <script src="landing/js/bootstrap.min.js"></script>
+            <script src="landing/js/menumaker.js"></script>
+            <script src="landing/js/jquery.sticky.js"></script>
+            <script src="landing/js/sticky-header.js"></script>
+            <script src="landing/js/owl.carousel.min.js"></script>
+            <script src="landing/js/multiple-carousel.js"></script>
+            <script src="landing/js/jquery-ui.js"></script>
+            <script src="landing/js/date.js"></script>
+            <script src="landing/js/return-to-top.js"></script>
+        </div>

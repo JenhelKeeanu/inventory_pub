@@ -1,0 +1,652 @@
+extends ../../home/views/navbar.pug
+
+block content
+    <div class="modal fade" id="toPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h3 font-weight-bolder col-md-6" id="modal_label"></h5>
+                <button type="button" class="close si_close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <form action="../functions/invoice.php" id="toPDF_form" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-12 col-sm-12 " style="padding-left:0;padding-right:0" for="exampleFormControlInput1">Payment Terms</label>
+                            <div  style="padding-left:0;padding-right:0" class="col-md-12 col-sm-12 ">
+                            <select  name="payment_terms" id="payment_terms" class="form-control">
+                                <option>Choose option</option>
+                                <option value="Cash On Delivery">Cash On Delivery</option>
+                                <option value="7 days">7 days</option>
+                                <option value="15 days">15 days</option>
+                                <option value="30 days">30 days</option>
+                            </select>
+                            </div>
+                        </div>
+                        //- <select name="payment_terms" id="payment_terms" class="custom-select" required>
+                        //- <option selected value="select">Select Payment Terms</option>
+                        //- <option value="Cash On Delivery">Cash On Delivery</option>
+                        //- <option value="7 days">7 days</option>
+                        //- <option value="15 days">15 days</option>
+                        //- <option value="30 days">30 days</option>
+                        //- </select>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Sales Invoice #</label>
+                            <input type="number" name="si#" id="SalesInvoice" required class="form-control" placeholder="">
+                        </div>
+                        <div class="form-group">
+                        <label for="exampleFormControlInput2">Branch Name</label>
+                        <input type="text" name="branchName" id="branchName" class="form-control" placeholder="">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary si_close" data-dismiss="modal">Close</button>
+                    <input  type="submit" class="btn btn-primary" name="submit_invoice" value="Invoice" id="submit_invoice">
+                
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    //- <!-- toDeliverModal -->
+    <div class="modal fade" id="toDeliver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title h3 font-weight-bolder col-md-6" id="modal_order_delivery_title"></h5>
+                    <button type="button" class="close del_close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action='/office/orders/deliverProducts' id="todelivery_form" method="post" >
+                    <div class="modal-body">
+                    <input type="hidden" name="text_field_reason" id="text_field_reason" value="">
+                    <div id="delivery-body"></div>
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope='col'>Quantity</th>
+                            <th scope='col'>UOM</th>
+                            <th scope='col'>Product Name</th>
+                            <th scope='col' class="text-center">Done<span style="color:red">*</span></th>
+                            <th scope='col'>File Upload</th>
+                            <th scope='col' id="reason_field" class="reason_field">Reason</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbl_delivery_items">
+                        </tbody>
+                    </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary del_close" data-dismiss="modal">Close</button>
+                        <input  type="submit" class="btn btn-primary" name="submit_invoice" value="Validate" id="validate_delivery">
+                    //- <!--    <button>Save changes</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    //- <!-- orderDetailsModal -->
+    <div class="modal fade" id="orderDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title h3 font-weight-bolder col-md-6" id="modal_order_details_title"></h5>
+                    <button type="button" class="close si_close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-1">
+                        <div class="col-md-6"><h6><strong>Customer Name: </strong><span class="font-weight-normal" id="cust_name"></span></h6></div>
+                        <div class="col-md-6"><h6><strong>TIN: </strong><span class="font-weight-normal" id="tin"></span></div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-6"><h6><strong>SHIPPING ADDRESS: </strong><br><span class="font-weight-normal" id="ship_add"></span></h6></div>
+                        <div class="col-md-6"><h6><strong>BILLING ADDRESS: </strong><br><span class="font-weight-normal" id="del_add"></span></h6></div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-6"><h6><strong>Delivery Date: </strong><span class="font-weight-normal" id="del_date"></span></h6></div>
+                        <div class="col-md-6"><h6><strong>Delivery Status: </strong><span class="font-weight-normal" id="del_status"></span></h6></div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-md-6"><h6><strong>Payment Terms: </strong><span class="font-weight-normal" id="pay_terms"></span></h6></div>
+                        <div class="col-md-6"><h6><strong>Payment Status: </strong><span class="font-weight-normal" id="pay_status"></span></h6></div>
+                    </div>
+                    <div id="order_items">
+                    <table class="table table-hover" >
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope='col'>#</th>
+                            <th scope='col'>Product Name</th>
+                            <th scope='col'>Qty</th>
+                            <th scope='col'>UOM</th>
+                            <th scope='col'>Unit Price</th>
+                            <th scope='col'>Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbl_ordered_items">
+                        </tbody>
+                    </table>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-8"></div><div class="col-md-2"><strong>SUB TOTAL:</strong></div><div class="font-weight-normal col-md-1 mt-1" id="sub_amount"></div>
+                    <div class="col-md-8"></div><div class="col-md-2"><strong>DELIVERY FEE</strong>:</div><div class="font-weight-normal col-md-1 mt-1" id="del_amount"></div>
+                    <div class="col-md-8"></div><div class="col-md-2"><strong>TOTAL AMOUNT:</strong></div><div class="font-weight-normal col-md-1 mt-1" id="total_amount"></div>
+                    <div class="w-25 p-3 mr-5">
+                        //- <div class="text-left w-100 font-weight-bolder h5 text-uppercase">SUB TOTAL:     <span id="sub_amount" class="pl-5 float-right">  </span></div>
+                        //- <div class="text-left w-100 font-weight-bolder h5 text-uppercase">DELIVERY FEE:     <span id="del_amount" class="pl-5 float-right">  </span></div>
+                        //- <div class="text-left w-100 font-weight-bolder h5 text-uppercase">TOTAL AMOUNT:     <span id="total_amount" class="pl-5 float-right">  </span></div>
+                    </div>
+                //- <!--    <button>Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">    
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#tab_content1" id="all-tab" role="tab" data-toggle="tab" aria-expanded="true">ALL</a>
+                            </li>
+                            <li role="presentation"><a href="#tab_content2" id="new-tab" role="tab" data-toggle="tab" aria-expanded="true">New Orders</a>
+                            </li>
+                            <li role="presentation"><a href="#tab_content3" id="delivery-tab" role="tab" data-toggle="tab" aria-expanded="true">For Delivery</a>
+                            </li>
+                            <li role="presentation"><a href="#tab_content4" id="payment-tab" role="tab" data-toggle="tab" aria-expanded="true">Receive Payment</a>
+                            </li>
+                            <li role="presentation"><a href="#tab_content5" id="done-tab" role="tab" data-toggle="tab" aria-expanded="true">Fulfilled Orders</a>
+                            </li>
+                        </ul>
+                        <div role="tabpanel" class="tab-pane mt-5 fade in active" id="tab_content1" aria-labelledby="all-tab">
+                            <div class="x_content">
+                                <div class="">
+                                    <div class="table-responsive m-b-40">
+                                    <table class="table table-hover" id="datatable1">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Order #</th>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Delivery Date</th>
+                                            <th scope="col">SI #</th>
+                                            <th scope="col">Delivery Status</th>
+                                            <th scope="col">Payment Status</th>
+                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        each orders in all
+                                            tr
+                                                td 
+                                                    value=orders.order_id 
+                                                td 
+                                                    value=orders.customer_name 
+                                                td 
+                                                    value=orders.date 
+                                                td SI 
+                                                td 
+                                                    value=orders.delivery_status 
+                                                td 
+                                                    value=orders.payment_status 
+                                                td 
+                                                    value=orders.total_amount
+                                                td 
+                                                    button.btn.btn-info.btn_orderDetails(id="btn-view-project" data-toggle='modal' data-target='#orderDetails' value= orders.order_id) Order Details
+                                                        //- <button type='button' class='btn btn-info btn_orderDetails' data-toggle='modal' data-target='#orderDetails' value='".$value->order_id."'>Order Details</button>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane mt-5 fade" id="tab_content2" aria-labelledby="new-tab">
+                            <div class="x_content">
+                                <div class="">
+                                    <div class="table-responsive m-b-40">
+                                    <table class="table table-hover" id="datatable2">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Order #</th>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Delivery Date</th>
+                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        each orders in new_order
+                                            tr
+                                                td 
+                                                    value=orders.order_id 
+                                                td 
+                                                    value=orders.customer_name 
+                                                td 
+                                                    value=orders.date 
+                                                td 
+                                                    value=orders.total_amount
+                                                td
+                                                    button.btn.btn-success.btn_toPDF(data-toggle='modal' data-target='#toPDF' value= orders.order_id) To PDF
+                                                    button.btn.btn-info.btn_orderDetails(id="btn-view-project" data-toggle='modal' data-target='#orderDetails' value= orders.order_id) Order Details
+                                                //- <td><button type='button' class='btn btn-success' data-toggle='modal' data-target='#toPDF'>To PDF</button>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane mt-5 fade" id="tab_content3" aria-labelledby="delivery-tab">
+                            <div class="x_content">
+                                <div class="">
+                                    <div class="table-responsive m-b-40">
+                                    <table class="table table-hover" id="datatable3">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Order #</th>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Delivery Date</th>
+                                            <th scope="col">SI #</th>
+                                            <th scope="col">Delivery Status</th>
+                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        each orders in delivery
+                                            tr
+                                                td 
+                                                    value=orders.order_id 
+                                                td 
+                                                    value=orders.customer_name 
+                                                td 
+                                                    value=orders.date 
+                                                td SI 
+                                                td 
+                                                    value=orders.delivery_status 
+                                                td
+                                                    value=orders.payment_status 
+                                                td
+                                                    button.btn.btn-success.btn_orderDeliver(data-toggle='modal' data-target='#toDeliver' value= orders.order_id) To Deliver
+                                                    button.btn.btn-info.btn_orderDetails(id="btn-view-project" data-toggle='modal' data-target='#orderDetails' value= orders.order_id) Order Details
+                                        
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane mt-5 fade" id="tab_content4" aria-labelledby="payment-tab">
+                            <div class="x_content">
+                                <div class="">
+                                    <div class="table-responsive m-b-40">
+                                    <table class="table table-hover" id="datatable4">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Order #</th>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Date Delivered</th>
+                                            <th scope="col">SI #</th>
+                                            <th scope="col">Payment Status</th>
+                                            <th scope="col">Aging</th>
+                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        each orders in delivered
+                                            tr
+                                                td 
+                                                    value=orders.order_id 
+                                                td 
+                                                    value=orders.customer_name 
+                                                td 
+                                                    value=orders.date 
+                                                td SI 
+                                                td 
+                                                    value=orders.delivery_status 
+                                                td
+                                                    value=orders.payment_status 
+                                                td 
+                                                    value=orders.total_amount
+                                                td 
+                                                    button.btn.btn-success.btn_orderDeliver(data-toggle='modal' data-target='#toDeliver' value= orders.order_id) Receive Payment
+                                                    button.btn.btn-info.btn_orderDetails(id="btn-view-project" data-toggle='modal' data-target='#orderDetails' value= orders.order_id) Order Details
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane mt-5 fade" id="tab_content5" aria-labelledby="done-tab">
+                            <div class="x_content">
+                                <div class="">
+                                    <div class="table-responsive m-b-40">
+                                    <table class="table table-hover" id="datatable5">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Order #</th>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Delivery Date</th>
+                                            <th scope="col">SI #</th>
+                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        each orders in done
+                                            tr
+                                                td 
+                                                    value=orders.order_id 
+                                                td 
+                                                    value=orders.customer_name 
+                                                td 
+                                                    value=orders.date 
+                                                td SI 
+                                                td 
+                                                    value=orders.total_amount
+                                                td 
+                                                    button.btn.btn-success.btn_toPDF(data-toggle='modal' data-target='#toPDF' value= orders.order_id) To PDF
+                                                    button.btn.btn-info.btn_orderDetails(id="btn-view-project" data-toggle='modal' data-target='#orderDetails' value= orders.order_id) Order Details
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    script.
+        $(document).ready(function() {
+            for(var i=1;i<=5;i++){
+                $('#datatable'+i).DataTable();
+            }
+        } );
+        //toPDF
+        $(".btn_toPDF").on('click', function(e) {
+            $("#modal_label").empty();
+            var id=$(this).val();
+            $("#modal_label").append("Order # "+id);
+            // $("#hiddenID").val(id);
+            $.ajax({
+                type : "POST",
+                url : window.location + "/get_order_details",
+                data: { id: id},
+                dataType: "json",
+                success: function(order_details){
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        $("#modal_order_details_title").append("Order # "+id);
+        });
+        //orderDetails
+        $(".btn_orderDetails").on('click', function(e) {
+            $("#modal_order_details_title").empty();
+            var id=$(this).val();
+            // $("#hiddenID").val(id);
+            $("#cust_name").empty();
+            $("#del_status").empty();
+            $("#tin").empty();
+            $("#pay_status").empty();
+            $("#pay_terms").empty();
+            $("#del_date").empty();
+            $("#ship_add").empty();
+            $("#del_add").empty();
+            $.ajax({
+                type : "POST",
+                url : window.location + "/get_order_details",
+                data: { id: id},
+                dataType: "json",
+                success: function(order_details){
+                    order_details=order_details['order_details'];
+                    //- $.each(order_details, function (index, value) {
+                    //-     console.log(value);
+                    //- });
+                    console.log(order_details);
+                    $("#cust_name").append(order_details.customer_name);
+                    $("#del_status").append(order_details.delivery_status);
+                    $("#tin").append(order_details.tin);
+                    $("#pay_status").append(order_details.payment_status);
+                    if(order_details.payment_terms!="NULL"&&order_details.payment_terms!="") $("#pay_terms").append(order_details.payment_terms);
+                    else $("#pay_terms").append('<div class="alert alert-info alert-dismissible " role="alert" style="padding-right:0">You may input payment terms upon clicking "<span style="color:blue">To PDF</span>" in <i>New Orders Tab</i></div>');
+                    $("#del_date").append(order_details.date);
+                    $("#ship_add").append(order_details.s_address);
+                    $("#del_add").append(order_details.b_address);
+
+                    $("#sub_amount").empty();
+                    $("#del_amount").empty();
+                    $("#total_amount").empty();
+                    $("#tbl_ordered_items").empty();
+                    $.ajax({
+                        method : "POST",
+                        url : window.location + "/get_order_items",
+                        dataType: "json",
+                        data: {id: id},
+                        success : function(order_items) {
+                            order_items=order_items['order_items'];
+                            console.log(order_items);
+                            var total=0;
+                            for(var i=0;i<order_items.length;i++){
+                                var res = order_items[i].UOM.split(" ");
+                                if(res[1] == 'g'){
+                                var UOM = (res[0]*order_items[i].qty_ordered)/1000;
+                                var price = (1000/res[0])*order_items[i].price;
+                                var uom = 'kg';
+                                }else if(res[1] == 'kg'){
+                                var UOM = order_items[i].qty_ordered;
+                                var price = order_items[i].price;
+                                var uom = 'kg';
+                                }
+                                else{
+                                var UOM = res[0];
+                                var price = order_items[i].price;
+                                var uom = res[1];
+                                }
+                                var amount=UOM * price;
+                                total+=amount;
+                                $("#tbl_ordered_items").append("<tr><td scope='col'>"+(i+1)+"</td><td scope='col'>"+order_items[i].NAME+"</td> <td scope='col'>"+UOM+"</td><td scope='col'>"+uom+"</td><td scope='col'> &#8369; "+price+"</td><td scope='col'> &#8369; "+amount+"</td></tr>");
+                            }
+                            $("#sub_amount").append("&#8369; "+total.toLocaleString());
+                            $("#del_amount").append("&#8369; "+order_details.shipping_amount.toLocaleString());
+                            total=total+parseInt(order_details.shipping_amount);
+                            $("#total_amount").append("&#8369; "+total.toLocaleString());
+                            
+                        },
+                        error: function(err) {
+                            console.log(err);
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        $("#modal_order_details_title").append("Order # "+id);
+        });
+        //orderDeliver
+        $(".btn_orderDeliver").on('click', function(e) {
+            $(document).off('focusin.modal');
+            console.log("DELIVERY");
+            $("#modal_order_delivery_title").empty();
+            var id=$(this).val();
+            $("#total_amount").empty();
+            $("#tbl_delivery_items").empty();
+            $("#delivery-body").empty();
+            $.ajax({
+                method : "POST",
+                url : window.location + "/get_order_items",
+                dataType: "json",
+                data: {id: id},
+                success : function(order_items) {
+                    order_items=order_items['order_items'];
+                    console.log(order_items);
+                    var total=0;
+                    for(var i=0;i<order_items.length;i++){
+                        var res = order_items[i].UOM.split(" ");
+                        if(res[1] == 'g'){
+                            var UOM = (res[0]*order_items[i].qty_ordered)/1000;
+                            var price = (1000/res[0])*order_items[i].price;
+                            var uom = 'kg';
+                        }else if(res[1] == 'kg'){
+                            var UOM = order_items[i].qty_ordered;
+                            var price = order_items[i].price;
+                            var uom = 'kg';
+                        }else{
+                            var UOM = res[0];
+                            var price = order_items[i].price;
+                            var uom = res[1];
+                        }
+                        var amount=UOM * price;
+                        total+=amount;
+                        $("#tbl_delivery_items").append("<tr><td scope='col' >"+UOM+"</td><td scope='col'>"+uom+"</td><td scope='col' class='itemrow"+i+"'>"+order_items[i].NAME+"</td> <td scope='col'><div class='form-group'><input type='hidden' name='item_id' value='"+order_items[i].prod_id+"'><input type='number' name='item_quantity' id='order_item_"+i+"'data-order_id='"+id+"' data-count='"+i+"' data-order='"+i+"'data-id='"+order_items[i].sku+"'class='item_order_list form-control form-control-sm' placeholder='' step='0.01'></div></td><td><input type='file' name='imageupload' accept='image/*' id='upload_item_"+i+"' title=' ' value=' ' onchange='img_item("+i+",this);'><img class='blah"+i+"' src='#' alt='your image' style='width:50%; display:none;'/></td><td class='reason_field' id='reason_field"+i+"'><textarea id='reason"+i+"' name='reasonfield' readonly='true' class='resizable_textarea form-control' rows='3' style='resize: none;' placeholder='...'></textarea></td></tr>");
+            
+                    }
+                    console.log(order_items.length);
+                    $("#delivery-body").append("<input type='hidden' name='item_count' value='"+order_items.length+"'><input type='hidden' name='order_id' value='"+id+"'>");
+                    
+                },
+                error: function(err) {
+                console.log(err);
+                }
+            });
+            $("#modal_order_delivery_title").append("Order # "+id);
+        });
+        function img_item(id,input) {
+            console.log(input.files);
+            console.log(id);
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.blah'+id).attr('src', e.target.result).css("display","block");
+                        //- .height(200);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }else{
+                $('.blah'+id).attr('src', ' ').css("display","none");
+            }
+        }
+        $(".del_close").on('click', function(e) {
+            $("#reason_field").addClass("reason_field");
+        });
+        $("#validate_delivery").on('click', function(e) {
+            console.log("validate")
+            e.preventDefault();
+            var checker=0;
+            var checker2=0;
+            var set = $('.item_order_list');
+            var length = set.length;
+            set.each(function(index, element){
+                var qty = $(this).val();
+                console.log(qty);
+                if(qty==""){
+                    empty();
+                    return false;
+                }
+                var sku= $(this).data('id');
+                var count= $(this).data('count');
+                var id= $(this).data('order_id');
+                $.ajax({
+                    method : "POST",
+                    url : window.location + "/get_item_stocks",
+                    dataType: "json",
+                    data: {sku:sku, id: id},
+                    success : function(items_qty) {
+                        items_qty=items_qty['items_qty'];
+                        for(var i=0;i<items_qty.length;i++){
+                            var res = items_qty[i].sku.split("-");
+                            var uom = res[1].split(" ");
+                            if(uom[1] == 'g'){
+                            var UOM = (uom[0]*items_qty[i].qty_ordered)/1000;
+                            }else if(uom[1] == 'kg'){
+                            var UOM = items_qty[i].qty_ordered;
+                            }else{
+                            var UOM = uom[0];
+                            }
+                            if(qty>=UOM && qty <= items_qty[i].qty){
+                            }else if(qty<UOM && qty <= items_qty[i].qty){
+                                checker++;
+                                $("#reason_field").removeClass("reason_field");
+                                $("#reason"+count).prop('readonly', false);
+                                if( $("#reason"+count).val()!=""){
+                                    checker--;
+                                }
+                            }else{
+                                checker2++;
+                            }
+                        }
+                        console.log(checker);
+                        if (index === (length - 1)) {
+                            console.log('Last field');
+                            if(checker>0){
+                                //- reason_field();
+                                set.each(function(index1, element){
+                                    $("#reason_field"+index1).removeClass("reason_field");
+                                });
+                            }
+                            if(checker2>0){
+                                console.log("Out of Stock");
+                            }
+                            if(checker==0&&checker2==0){
+                                console.log('submit form here');
+                                //- swal({
+                                //-     text: "Order Delivered Successfully",
+                                //-     type: 'success',
+                                //-     confirmButtonColor: '#3085d6',
+                                //-     confirmButtonText: 'OK!'
+                                //-     }).then((result) => {
+                                //-     if (result.value) {
+                                //-     }                        
+                                //- })
+                                $("#todelivery_form").submit();
+                            }
+                        }
+
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+
+            });
+        });
+        function reason_field(){
+            $(document).off('focusin.modal');
+            console.log("POP UP REASON");
+            Swal.fire({
+                title: 'Reason for some short qty items:',
+                input: 'textarea',
+                showCancelButton: true,
+                confirmButtonColor: '#24b14b',
+                confirmButtonText: 'Confirm',
+                showLoaderOnConfirm: true,
+                preConfirm: (text)=>{
+                    $("#text_field_reason").val(text);
+                    $("#todelivery_form").submit();
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                if (result.value) {
+                    console.log(result);
+                    swal({
+                        text: "Order Delivered Successfully",
+                        type: 'success',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK!'
+                        }).then((result) => {
+                        if (result.value) {
+                        }                        
+                    })
+                }
+            })
+        }
+        
