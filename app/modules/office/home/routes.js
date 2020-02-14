@@ -17,13 +17,13 @@ var now = y +"-"+ m +"-"+ d;
 const cron = require("node-cron");
 let shell = require("shelljs");
 
-cron.schedule("*/1 * * * *", function(){
-    console.log("Schedule Running...");
+// cron.schedule("*/1 * * * *", function(){
+//     console.log("Schedule Running...");
     
-    // if(shell.exec("dir").code !== 0){
-    //     console.log("something went wrong");
-    // }
-});
+//     // if(shell.exec("dir").code !== 0){
+//     //     console.log("something went wrong");
+//     // }
+// });
 router.get('/',(req, res) => {
     return res.render('office/home/views/home');
 });
