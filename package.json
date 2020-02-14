@@ -4,7 +4,7 @@
   "description": "A quick and simple ExpressJS boilerplate",
   "main": "index.js",
   "scripts": {
-    "build": "node app.js",
+    "build": "node index.js",
     "test": "standard"
   },
   "repository": {
@@ -15,7 +15,7 @@
     "expressjs",
     "boilerplate"
   ],
-  "author": "Micah Andrew Bule",
+  "author": "zagana",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/PUP-CCIS/express-boilerplate/issues"
