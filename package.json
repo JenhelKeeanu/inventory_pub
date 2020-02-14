@@ -37,6 +37,8 @@
     "shelljs": "^0.8.3",
     "sweetalert": "^2.1.0",
     "sync": "^0.2.5",
-    "winston": "^2.4.1"
+    "winston": "^2.4.1",
+    "netlify-lambda": "^1.4.3",
+    "serverless-http": "^1.9.1"
   }
 }
